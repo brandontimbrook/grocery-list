@@ -1,4 +1,20 @@
-groceries = []
+import json
+
+def save():
+    with open("groceries.json", "w") as file:
+        json.dump(groceries, file)
+
+
+def load():
+    try:
+        with open("groceries.json", "r") as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return []
+    except json.JSONDecodeError:
+        return []
+
+groceries = load()
 
 def new():
     while True:
@@ -12,7 +28,7 @@ def new():
                 "checked": False
             }
         )
-    return
+        save()
 
 def add():
     while True:
@@ -26,7 +42,7 @@ def add():
                 "checked": False
             }
         )
-    return
+        save()
 
 def show():
     for grocery in groceries:
@@ -41,9 +57,14 @@ def check():
         check = input("What would you like to check off? ")
         if check.strip().lower() == "done":
             return
+        found = False
         for grocery in groceries:
             if check == grocery["item"]:
                 grocery["checked"] = True
+                found = True
+                save()
+        if not found:
+            print("Item Not Found")
 
 def uncheck():
     
@@ -56,22 +77,28 @@ def uncheck():
             if uncheck == grocery["item"]:
                 grocery["checked"] = False
                 found = True
+                save()
         if not found:
             print("Item Not Found")
 
 def clear():
-    for grocery in groceries:
-        groceries.clear()
-    return
+    groceries.clear()
+    save()
 
 def remove():
     while True:
         remove = input("What would you like to remove? ")
         if remove.strip().lower() == "done":
             return
+        found = False
         for grocery in groceries:
             if remove == grocery["item"]:
                 groceries.remove(grocery)
+                found = True
+                save()
+        if not found:
+            print("Item Not Found")
+
 
 while True:
     branch = input("What are we doing today? ")
@@ -93,4 +120,5 @@ while True:
         clear()
     if branch_command == "exit":
         break
-    
+    else:
+        print("Command Not Found")
