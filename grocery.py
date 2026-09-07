@@ -18,67 +18,20 @@ groceries = load()
 
 def new():
     clear()
-    while True:
-        grocery = input("\nEnter an item: ")
-        grocery_command = grocery.strip().lower()
-        if grocery_command == "done":
-            break
-        if grocery_command == "show":
-            show()
-            continue
-        for existing_grocery in groceries:
-            if existing_grocery["item"] == grocery_command:
-                print("Item already added to list.")
-                break
-        else:
-            quantity = input("How many do you need? ")
-            quantity_command = quantity.strip().lower()
-            if quantity_command == "done":
-                break
-            groceries.append(
-                {
-                    "item": grocery_command,
-                    "quantity": quantity,
-                    "checked": False
-                }
-            )
-            print(f"{grocery_command} added.")
-            save()
+    grocery_entry()
 
 def add():
-    while True:
-        grocery = input("\nEnter an item: ")
-        grocery_command = grocery.strip().lower()
-        if grocery_command == "done":
-            break
-        if grocery_command == "show":
-            show()
-            continue
-        for existing_grocery in groceries:
-            if existing_grocery["item"] == grocery_command:
-                print(f"{grocery_command} already added to list.")
-                break
-        else:
-            quantity = input("How many do you need? ")
-            quantity_command = quantity.strip().lower()
-            if quantity_command == "done":
-                break
-            groceries.append(
-                {
-                    "item": grocery_command,
-                    "quantity": quantity,
-                    "checked": False
-                }
-            )
-            print(f"{grocery_command} added.")
-            save()
+    grocery_entry()
 
 def edit():
     while True:
         grocery_edit = input("\nWhat item would you like to update? ")
         grocery_edit_command = grocery_edit.strip().lower()
-        if grocery_edit_command == "done":
+        if grocery_edit_command == "":
             return
+        elif grocery_edit_command == "show":
+            show()
+            continue
         found = False
         for grocery in groceries:
             if grocery_edit_command == grocery["item"]:
@@ -89,7 +42,7 @@ def edit():
             grocery["quantity"] = quantity
             print(f"{grocery['item']} updated.")
             save()
-        if not found:
+        else:
             print(f"{grocery_edit_command} not found.")
 
 def show():
@@ -105,8 +58,11 @@ def check():
     while True:
         check = input("\nWhat would you like to check off? ")
         check_command = check.strip().lower()
-        if check_command == "done":
+        if check_command == "":
             return
+        elif check_command == "show":
+            show()
+            continue
         found = False
         for grocery in groceries:
             if check_command == grocery["item"]:
@@ -122,8 +78,11 @@ def uncheck():
     while True:
         uncheck = input("\nWhat would you like to uncheck? ")
         uncheck_command = uncheck.strip().lower()
-        if uncheck_command == "done":
+        if uncheck_command == "":
             return
+        elif uncheck_command == "show":
+            show()
+            continue
         found = False
         for grocery in groceries:
             if uncheck_command == grocery["item"]:
@@ -138,8 +97,11 @@ def remove():
     while True:
         remove = input("\nWhat would you like to remove? ")
         remove_command = remove.strip().lower()
-        if remove_command == "done":
+        if remove_command == "":
             return
+        elif remove_command == "show":
+            show()
+            continue
         found = False
         for grocery in groceries:
             if remove_command == grocery["item"]:
@@ -148,12 +110,40 @@ def remove():
                 print(f"{grocery['item']} removed.")
                 save()
                 break
-        if not found:
+        else:
             print(f"{remove_command} not found.")
 
 def clear():
     groceries.clear()
     save()
+
+def grocery_entry():
+    while True:
+        grocery = input("\nEnter an item: ")
+        grocery_command = grocery.strip().lower()
+        if grocery_command == "":
+            break
+        elif grocery_command == "show":
+            show()
+            continue
+        for existing_grocery in groceries:
+            if existing_grocery["item"] == grocery_command:
+                print(f"{grocery_command} already added to list.")
+                break
+        else:
+            quantity = input("How many do you need? ")
+            quantity_command = quantity.strip().lower()
+            if quantity_command == "":
+                break
+            groceries.append(
+                {
+                    "item": grocery_command,
+                    "quantity": quantity,
+                    "checked": False
+                }
+            )
+            print(f"{grocery_command} added.")
+            save()
 
 while True:
     branch = input("\nWhat are we doing today?\n")
@@ -161,19 +151,42 @@ while True:
 
     if branch_command == "new":
         new()
-    if branch_command == "add":
+    elif branch_command == "add":
         add()
-    if branch_command == "edit":
+    elif branch_command == "edit":
         edit()
-    if branch_command == "show":
+    elif branch_command == "show":
         show()        
-    if branch_command == "check":
+    elif branch_command == "check":
         check()
-    if branch_command == "uncheck":
+    elif branch_command == "uncheck":
         uncheck()
-    if branch_command == "remove":
+    elif branch_command == "remove":
         remove()
-    if branch_command == "clear":
+    elif branch_command == "clear":
         clear()
-    if branch_command == "exit":
+    elif branch_command == "quit":
         break
+    else:
+        print("""
+        Not a valid command.
+        
+        The currently available list of commands are:
+        
+        new - clears existing list and creates a new list
+        
+        add - adds new entries to current list
+        
+        edit - update the quantity of an item on the current list
+        
+        show - shows the current list and item statuses
+        
+        check - changes state of an item to checked off
+        
+        uncheck - changes state of an item to not checked off
+        
+        remove - deletes an items entry from the current list
+        
+        clear - clears all entries on current list
+        
+        quit - closes program and exits to shell""")
