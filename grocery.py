@@ -19,7 +19,7 @@ groceries = load()
 def new():
     clear()
     while True:
-        grocery = input("Enter an item: ")
+        grocery = input("\nEnter an item: ")
         grocery_command = grocery.strip().lower()
         if grocery_command == "done":
             break
@@ -27,7 +27,7 @@ def new():
             show()
             continue
         for existing_grocery in groceries:
-            if existing_grocery["item"] == grocery:
+            if existing_grocery["item"] == grocery_command:
                 print("Item already added to list.")
                 break
         else:
@@ -37,16 +37,17 @@ def new():
                 break
             groceries.append(
                 {
-                    "item": grocery,
+                    "item": grocery_command,
                     "quantity": quantity,
                     "checked": False
                 }
             )
+            print(f"{grocery_command} added.")
             save()
 
 def add():
     while True:
-        grocery = input("Enter an item: ")
+        grocery = input("\nEnter an item: ")
         grocery_command = grocery.strip().lower()
         if grocery_command == "done":
             break
@@ -54,8 +55,8 @@ def add():
             show()
             continue
         for existing_grocery in groceries:
-            if existing_grocery["item"] == grocery:
-                print("Item already added to list.")
+            if existing_grocery["item"] == grocery_command:
+                print(f"{grocery_command} already added to list.")
                 break
         else:
             quantity = input("How many do you need? ")
@@ -64,12 +65,32 @@ def add():
                 break
             groceries.append(
                 {
-                    "item": grocery,
+                    "item": grocery_command,
                     "quantity": quantity,
                     "checked": False
                 }
             )
+            print(f"{grocery_command} added.")
             save()
+
+def edit():
+    while True:
+        grocery_edit = input("\nWhat item would you like to update? ")
+        grocery_edit_command = grocery_edit.strip().lower()
+        if grocery_edit_command == "done":
+            return
+        found = False
+        for grocery in groceries:
+            if grocery_edit_command == grocery["item"]:
+                found = True
+                break
+        if found:
+            quantity = input("How many do you need? ")
+            grocery["quantity"] = quantity
+            print(f"{grocery['item']} updated.")
+            save()
+        if not found:
+            print(f"{grocery_edit_command} not found.")
 
 def show():
     for grocery in groceries:
@@ -82,62 +103,68 @@ def show():
 
 def check():
     while True:
-        check = input("What would you like to check off? ")
-        if check.strip().lower() == "done":
+        check = input("\nWhat would you like to check off? ")
+        check_command = check.strip().lower()
+        if check_command == "done":
             return
         found = False
         for grocery in groceries:
-            if check == grocery["item"]:
+            if check_command == grocery["item"]:
                 grocery["checked"] = True
                 found = True
-                print(f"{grocery['item']} has been checked.")
+                print(f"{grocery['item']} checked.")
                 save()
         if not found:
-            print("Item not found")
+            print(f"{check_command} not found.")
 
 def uncheck():
     
     while True:
-        uncheck = input("What would you like to uncheck? ")
-        if uncheck.strip().lower() == "done":
+        uncheck = input("\nWhat would you like to uncheck? ")
+        uncheck_command = uncheck.strip().lower()
+        if uncheck_command == "done":
             return
         found = False
         for grocery in groceries:
-            if uncheck == grocery["item"]:
+            if uncheck_command == grocery["item"]:
                 grocery["checked"] = False
                 found = True
-                print(f"{grocery['item']} has been unchecked.")
+                print(f"{grocery['item']} unchecked.")
                 save()
         if not found:
-            print("Item not found")
+            print(f"{uncheck_command} not found.")
 
 def remove():
     while True:
-        remove = input("What would you like to remove? ")
-        if remove.strip().lower() == "done":
+        remove = input("\nWhat would you like to remove? ")
+        remove_command = remove.strip().lower()
+        if remove_command == "done":
             return
         found = False
         for grocery in groceries:
-            if remove == grocery["item"]:
+            if remove_command == grocery["item"]:
                 groceries.remove(grocery)
                 found = True
+                print(f"{grocery['item']} removed.")
                 save()
                 break
         if not found:
-            print("Item not found")
+            print(f"{remove_command} not found.")
 
 def clear():
     groceries.clear()
     save()
 
 while True:
-    branch = input("What are we doing today? ")
+    branch = input("\nWhat are we doing today?\n")
     branch_command = branch.strip().lower()
 
     if branch_command == "new":
         new()
     if branch_command == "add":
-        add()       
+        add()
+    if branch_command == "edit":
+        edit()
     if branch_command == "show":
         show()        
     if branch_command == "check":
